@@ -1,4 +1,4 @@
-# luminaria
+# Luminaria
 Library for animating NeoPixel LEDs with CircuitPython
 
 Tested only on RaspberryPi Pico devices
