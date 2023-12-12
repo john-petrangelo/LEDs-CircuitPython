@@ -5,31 +5,37 @@ import neopixel
 
 import colors
 from models import Gradient
+from animations import Rotate, Pulsate
 from renderer import Renderer
 
 # Setup neopixel strip
 PIXELS_PIN = board.GP28
 PIXELS_COUNT = 64
-strip = neopixel.NeoPixel(PIXELS_PIN, PIXELS_COUNT, brightness=0.05, auto_write=False)
+BRIGHTNESS = 0.05
 
+strip = neopixel.NeoPixel(PIXELS_PIN, PIXELS_COUNT, brightness=BRIGHTNESS, auto_write=False)
 # print("Running roving_dot")
 # roving_dot.run(strip)
 
 strip.fill(colors.YELLOW)
 strip.show()
-time.sleep(1)
+time.sleep(0.2)
 
 # renderer = Renderer(PIXELS_COUNT, Solid("Solid red", colors.RED))
-renderer = Renderer(PIXELS_COUNT, Gradient("Gradient red/blue", colors.RED, colors.BLUE))
+gradient = Gradient("Gradient red/blue", colors.RED, colors.BLUE)
+rotate = Rotate("Rotation", 5000, gradient)
+pulsate = Pulsate("Pulsate", 0.0, 1.0, 1000, 1000, gradient)
+
+renderer = Renderer(PIXELS_COUNT, rotate)
+
 while True:
     pixels = renderer.loop()
     # print(f"Pixels={pixels}")
     for i in range(len(pixels)):
         strip[i] = pixels[i]
     strip.show()
-    time.sleep(1)
-
-
+    # print(f"pixels=[{pixels[:3]}...")
+    time.sleep(.001)
 
 # std::shared_ptr<Model> makeDarkCrystal() {
 #   return makeCrystal(0xff00d0, 5.0, 0xff00d0, 8.0, 0xff00d0, 7.0);

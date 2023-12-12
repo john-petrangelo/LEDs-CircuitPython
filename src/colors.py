@@ -13,9 +13,16 @@ WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
 
 
-# Blend the provided colors
-# Ratio of the blend between a and b. 0 means all c1, 100 means all c1, 50 means 50% of each.
 def blend(c1: tuple, c2: tuple, ratio: int):
+    """
+    Blend two colors resulting in a new color. The blend is expressed as a ratio of the blend between
+    the two colors. 0 means all first color, 100 means all second color, 50 means 50% of each.
+
+    :param c1: First color
+    :param c2: Second color
+    :param ratio: Ratio of second color to first color.
+    :return: blended color
+    """
     if len(c1) != 3 or len(c2) != 3:
         return GRAY
 
@@ -25,14 +32,23 @@ def blend(c1: tuple, c2: tuple, ratio: int):
     return red, green, blue
 
 
-# Fade the color towards black
-# Ratio of 0 gives black, 100 gives starting color, 50 gives faded halfway to black
 def fade(c: tuple, ratio: int):
+    """
+    Fade the color towards black. Ratio of 0 gives black, 100 gives color, 50 is halfway to black.
+    :param c: The color
+    :param ratio: Amount of blackness, 0 = black, 100 = full color, 50 = halfway to black
+    :return: faded color
+    """
     return blend(BLACK, c, ratio)
 
 
-# Add two colors together, constraining sum to 255
 def add(c1: tuple, c2: tuple):
+    """
+    Add two colors together, constraining each component to 255 (max saturation)
+    :param c1: first color
+    :param c2: second color
+    :return: sum of colors
+    """
     if len(c1) != 3 or len(c2) != 3:
         return GRAY
 
@@ -41,6 +57,12 @@ def add(c1: tuple, c2: tuple):
             _constrain(c1[2] + c2[2], 0, 255))
 
 
-# Constrain the value n to be in the range from min_val to max_val
 def _constrain(n: int, min_val: int, max_val: int):
+    """
+    Constrain a value to lie in the specified range
+    :param n: the value to be constrained
+    :param min_val: minimum value allowed
+    :param max_val: maximum value allowed
+    :return: the constrained value, where min_val <= value <= max_value
+    """
     return max(min(max_val, n), min_val)
