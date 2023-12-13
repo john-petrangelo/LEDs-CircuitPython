@@ -1,3 +1,5 @@
+import math
+
 import colors
 
 
@@ -62,3 +64,24 @@ class Gradient(Model):
 
     def render(self, pos: float):
         return colors.blend(self.c1, self.c2, int(100 * pos))
+
+
+class MultiGradient(Model):
+    """
+    Set a gradient color pattern. The number of defined color points is variable.
+    """
+    def __init__(self, name: str, color_list: list):
+        self.color_list = color_list
+        super().__init__(name)
+
+    def render(self, pos: float):
+        color_pos = pos * (len(self.color_list)-1)
+        lower = math.floor(color_pos)
+        upper = math.ceil(color_pos)
+
+        # Linearly interpolate from the lower color to the upper color. If same, quick return.
+        if upper == lower:
+            return self.color_list[lower]
+
+        ratio = (color_pos - lower) / (upper - lower)
+        return colors.blend(self.color_list[lower], self.color_list[upper], int(100 * ratio))

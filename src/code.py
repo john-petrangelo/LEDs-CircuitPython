@@ -4,14 +4,14 @@ import board
 import neopixel
 
 import colors
-from models import Gradient
+from models import MultiGradient
 from animations import Rotate, Pulsate
 from renderer import Renderer
 
 # Setup neopixel strip
 PIXELS_PIN = board.GP28
-PIXELS_COUNT = 64
-BRIGHTNESS = 0.05
+PIXELS_COUNT = 50
+BRIGHTNESS = 0.5
 
 strip = neopixel.NeoPixel(PIXELS_PIN, PIXELS_COUNT, brightness=BRIGHTNESS, auto_write=False)
 # print("Running roving_dot")
@@ -22,7 +22,8 @@ strip.show()
 time.sleep(0.2)
 
 # renderer = Renderer(PIXELS_COUNT, Solid("Solid red", colors.RED))
-gradient = Gradient("Gradient red/blue", colors.RED, colors.BLUE)
+gradient = MultiGradient("Gradient red/green", [colors.RED, colors.ORANGE, colors.YELLOW,
+                                                colors.GREEN, colors.BLUE, colors.VIOLET, colors.RED])
 rotate = Rotate("Rotation", 5000, gradient)
 pulsate = Pulsate("Pulsate", 0.0, 1.0, 1000, 1000, gradient)
 
