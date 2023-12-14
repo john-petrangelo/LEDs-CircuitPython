@@ -4,7 +4,7 @@ import board
 import neopixel
 
 import colors
-from models import MultiGradient
+from models import MultiGradient, Map, Solid, Triangle, Reverse
 from animations import Rotate, Pulsate
 from renderer import Renderer
 
@@ -12,31 +12,30 @@ from renderer import Renderer
 PIXELS_PIN = board.GP28
 PIXELS_COUNT = 50
 BRIGHTNESS = 0.5
+ORDER = neopixel.RGB
 
-strip = neopixel.NeoPixel(PIXELS_PIN, PIXELS_COUNT, brightness=BRIGHTNESS, auto_write=False)
-# print("Running roving_dot")
-# roving_dot.run(strip)
+strip = neopixel.NeoPixel(PIXELS_PIN, PIXELS_COUNT, brightness=BRIGHTNESS, auto_write=False, pixel_order=ORDER)
 
-strip.fill(colors.YELLOW)
+strip.fill(colors.WHITE)
 strip.show()
 time.sleep(0.2)
 
-# renderer = Renderer(PIXELS_COUNT, Solid("Solid red", colors.RED))
-gradient = MultiGradient("Gradient red/green", [colors.RED, colors.ORANGE, colors.YELLOW,
+gradient = MultiGradient("Gradient rainbow", [colors.RED, colors.ORANGE, colors.YELLOW,
                                                 colors.GREEN, colors.BLUE, colors.VIOLET, colors.RED])
-rotate = Rotate("Rotation", 5000, gradient)
-pulsate = Pulsate("Pulsate", 0.0, 1.0, 1000, 1000, gradient)
+triangle = Triangle("Triangle WHITE", 0.1, 1.0, colors.WHITE)
+rotate = Rotate("Rotation", 5000, triangle)
+pulsate = Pulsate("Pulsate", 0.1, 1.0, 1000, 1000, rotate)
+reverse = Reverse("Reverse", gradient)
 
-renderer = Renderer(PIXELS_COUNT, rotate)
+renderer = Renderer(PIXELS_COUNT, reverse)
 
 while True:
     pixels = renderer.loop()
-    # print(f"Pixels={pixels}")
     for i in range(len(pixels)):
         strip[i] = pixels[i]
     strip.show()
-    # print(f"pixels=[{pixels[:3]}...")
     time.sleep(.001)
+
 
 # std::shared_ptr<Model> makeDarkCrystal() {
 #   return makeCrystal(0xff00d0, 5.0, 0xff00d0, 8.0, 0xff00d0, 7.0);
