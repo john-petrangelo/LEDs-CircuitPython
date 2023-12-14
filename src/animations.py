@@ -38,13 +38,13 @@ class Pulsate(Model):
         super().__init__(name)
 
     def update(self, timestamp_ms: float):
-        timestamp_ms = timestamp_ms % self.period_ms
-        if timestamp_ms < self.brighten_ms:
+        mod_timestamp_ms = timestamp_ms % self.period_ms
+        if mod_timestamp_ms < self.brighten_ms:
             # We're getting brighter
-            self.dimness = map_value(timestamp_ms, 0.0, self.brighten_ms, self.brightest, self.dimmest)
+            self.dimness = map_value(mod_timestamp_ms, 0.0, self.brighten_ms, self.brightest, self.dimmest)
         else:
             # We're getting dimmer
-            self.dimness = map_value(timestamp_ms, self.brighten_ms, self.period_ms, self.dimmest, self.brightest)
+            self.dimness = map_value(mod_timestamp_ms, self.brighten_ms, self.period_ms, self.dimmest, self.brightest)
 
         self.model.update(timestamp_ms)
 
