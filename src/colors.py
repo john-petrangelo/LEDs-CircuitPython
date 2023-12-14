@@ -13,7 +13,7 @@ WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
 
 
-def blend(c1: tuple, c2: tuple, ratio: int):
+def blend(c1: tuple, c2: tuple, ratio: int) -> tuple:
     """
     Blend two colors resulting in a new color. The blend is expressed as a ratio of the blend between
     the two colors. 0 means all first color, 100 means all second color, 50 means 50% of each.
