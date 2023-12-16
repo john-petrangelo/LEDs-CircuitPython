@@ -42,27 +42,21 @@ def fade(c: tuple, ratio: int):
     return blend(BLACK, c, ratio)
 
 
-def add(c1: tuple, c2: tuple):
+def add(*colors: tuple):
     """
-    Add two colors together, constraining each component to 255 (max saturation)
-    :param c1: first color
-    :param c2: second color
+    Add two colors together, constraining each component to maximum value of 255
+    :param colors: colors to add together
     :return: sum of colors
     """
-    if len(c1) != 3 or len(c2) != 3:
-        return GRAY
+    sum_red = 0
+    sum_green = 0
+    sum_blue = 0
+    for c in colors:
+        sum_red += c[0]
+        sum_green += c[1]
+        sum_blue += c[2]
 
-    return (_constrain(c1[0] + c2[0], 0, 255),
-            _constrain(c1[1] + c2[1], 0, 255),
-            _constrain(c1[2] + c2[2], 0, 255))
-
-
-def _constrain(n: int, min_val: int, max_val: int):
-    """
-    Constrain a value to lie in the specified range
-    :param n: the value to be constrained
-    :param min_val: minimum value allowed
-    :param max_val: maximum value allowed
-    :return: the constrained value, where min_val <= value <= max_value
-    """
-    return max(min(max_val, n), min_val)
+    # Return the resulting sum, constraining value to be between 0 and 255
+    return (max(min(255, sum_red), 0),
+            max(min(255, sum_green), 0),
+            max(min(255, sum_blue), 0))
