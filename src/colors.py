@@ -48,13 +48,9 @@ def add(*colors: tuple):
     :param colors: colors to add together
     :return: sum of colors
     """
-    sum_red = 0
-    sum_green = 0
-    sum_blue = 0
-    for c in colors:
-        sum_red += c[0]
-        sum_green += c[1]
-        sum_blue += c[2]
+    if not colors:
+        return BLACK
+    sum_red, sum_green, sum_blue = map(sum, zip(*colors))
 
     # Return the resulting sum, constraining value to be between 0 and 255
     return (max(min(255, sum_red), 0),
