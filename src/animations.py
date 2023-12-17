@@ -1,5 +1,4 @@
 import colors
-from colors import RED, YELLOW
 from models import Model
 
 
