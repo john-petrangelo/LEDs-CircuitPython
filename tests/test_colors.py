@@ -1,21 +1,51 @@
 import unittest
-from src.colors import add, blend, fade, BLACK, GRAY
+from src.colors import same, add, blend, fade, BLACK, GRAY
+
+
+class TestSameFunction(unittest.TestCase):
+
+    def test_same_identical_colors(self):
+        color1 = (255, 0, 0)
+        color2 = (255, 0, 0)
+
+        # Assert that identical colors are considered the same
+        result = same(color1, color2)
+        self.assertTrue(result)
+
+    def test_same_similar_colors(self):
+        color1 = (255, 0, 0)
+        color2 = (254.9991, 0.0009, 0)
+
+        # Assert that slightly different colors within the default delta are considered the same
+        result = same(color1, color2)
+        self.assertTrue(result)
+
+    def test_same_different_colors_outside_delta(self):
+        color1 = (255, 0, 0)
+        color2 = (254.89, 0.11, 0)
+
+        # Assert that different delta values affect the comparison
+        result_default_delta = same(color1, color2)
+        result_custom_delta = same(color1, color2, allowed_delta=0.2)
+
+        self.assertFalse(result_default_delta)
+        self.assertTrue(result_custom_delta)
 
 
 class TestBlendFunction(unittest.TestCase):
 
     def test_blend_colors(self):
         # Test case 1
-        result = blend((255, 0, 0), (0, 255, 0), 50)
+        result = blend((255, 0, 0), (0, 255, 0), 0.5)
         self.assertEqual(result, (127.5, 127.5, 0))
 
         # Test case 2
-        result = blend((255, 0, 0), (0, 0, 255), 25)
+        result = blend((255, 0, 0), (0, 0, 255), 0.25)
         self.assertEqual(result, (191.25, 0.0, 63.75))
 
     def test_invalid_input(self):
         # Test case for invalid input
-        result = blend((255, 0, 0), (0, 255, 0, 255), 50)
+        result = blend((255, 0, 0), (0, 255, 0, 255), 0.5)
         self.assertEqual(result, GRAY)
 
 
@@ -23,21 +53,21 @@ class TestFadeFunction(unittest.TestCase):
 
     def test_fade_color(self):
         # Test case 1
-        result = fade((255, 0, 0), 50)
+        result = fade((255, 0, 0), 0.5)
         self.assertEqual(result, (127.5, 0, 0))
 
         # Test case 2
-        result = fade((0, 255, 0), 25)
+        result = fade((0, 255, 0), 0.25)
         self.assertEqual(result, (0, 63.75, 0))
 
     def test_fade_to_black(self):
         # Test case for fading to black
-        result = fade((100, 150, 200), 0)
-        self.assertEqual(result, BLACK)  # Fading with ratio 100 should result in black
+        result = fade((100, 150, 200), 0.0)
+        self.assertEqual(result, BLACK)  # Fading with ratio 0.0 should result in black
 
     def test_invalid_input(self):
         # Test case for invalid input
-        result = fade((255, 0, 0, 255), 50)
+        result = fade((255, 0, 0, 255), 0.5)
         self.assertEqual(result, GRAY)  # Invalid color should fade to black
 
 
