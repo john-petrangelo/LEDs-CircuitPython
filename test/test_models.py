@@ -1,6 +1,6 @@
 import unittest
 
-from models import Model, Solid, Gradient, MultiGradient, Map, Triangle, Reverse, Add, Window
+from models import Solid, Gradient, MultiGradient, Map, Triangle, Reverse, Add, Window
 import colors
 
 
