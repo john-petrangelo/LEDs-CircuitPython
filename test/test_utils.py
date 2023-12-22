@@ -1,5 +1,5 @@
 import unittest
-from src.utils import map_value
+from utils import map_value
 
 
 class TestMapValueFunction(unittest.TestCase):
