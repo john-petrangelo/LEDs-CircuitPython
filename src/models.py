@@ -1,7 +1,7 @@
 import math
 
-from src import colors
-from src import utils
+import colors
+import utils
 
 
 class Model:
@@ -60,7 +60,7 @@ class Model:
         """
         pass
 
-    def render(self, pos: float):
+    def render(self, pos: float) -> tuple:
         """
         Returns the color that should be displayed at the specified pos at the current time.
 
@@ -194,7 +194,7 @@ class MultiGradient(Model):
         super().__init__(name)
 
     def render(self, pos: float):
-        color_pos = pos * (len(self.color_list)-1)
+        color_pos = pos * (len(self.color_list) - 1)
         lower = math.floor(color_pos)
         upper = math.ceil(color_pos)
 
@@ -305,6 +305,7 @@ class Triangle(Model):
     - The color blending is based on linear interpolation, and the `utils.map_value` function is used to determine the
       color ratio at a given position.
     """
+
     def __init__(self, name: str, range_min: float, range_max: float, color: tuple):
         self.range_min = range_min
         self.range_max = range_max
@@ -351,6 +352,7 @@ class Reverse(Model):
     result_color = reversed_model.render(0.75)
     ```
     """
+
     def __init__(self, name: str, model: Model):
         self.model = model
         super().__init__(name)
@@ -396,16 +398,79 @@ class Add(Model):
     - The addition operation is performed for each pixel channel (red, green, blue) independently.
     - The resulting color is constrained to ensure that each channel does not exceed full brightness.
     """
+
     def __init__(self, name: str, models: list[Model]):
         self.models = models
         super().__init__(name)
+
+    def update(self, timestamp_ms):
+        for model in self.models:
+            model.update(timestamp_ms)
 
     def render(self, pos: float):
         model_colors = [m.render(pos) for m in self.models]
         return colors.add(*model_colors)
 
 
-#
+class Window(Model):
+    """
+    A model that creates a window effect by combining two models based on a specified position range.
+
+    The `Window` class represents a virtual window where two different models are rendered based on the position
+    within a specified range. The inside of the window is rendered using one model (`inside_model`), and the outside
+    of the window is rendered using another model (`outside_model`).
+
+    Parameters:
+    - `name` (str): Name of the `Window` instance, shown in debug messages.
+    - `range_min` (float): Minimum position value of the window range.
+    - `range_max` (float): Maximum position value of the window range.
+    - `inside_model` (Model): The model to render inside the window range.
+    - `outside_model` (Model): The model to render outside the window range.
+
+    Methods:
+    - `update(timestamp_ms: float)`: Update the internal state of the `Window` and its models.
+    - `render(pos: float) -> Tuple[int, int, int]`: Obtain the color at a given position.
+
+    Attributes:
+    - `range_min` (float): Minimum position value of the window range.
+    - `range_max` (float): Maximum position value of the window range.
+    - `inside_model` (Model): The model to render inside the window range.
+    - `outside_model` (Model): The model to render outside the window range.
+    - `name` (str): Name of the `Window` instance, shown in debug messages.
+
+    Usage:
+    ```python
+    # Create two models for inside and outside the window
+    inside_model = Gradient("InsideGradient", (255, 0, 0), (0, 255, 0))
+    outside_model = Solid("OutsideSolid", (0, 0, 255))
+
+    # Create a window that transitions from the inside gradient to the outside solid color
+    window_model = Window("WindowModel", 0.3, 0.7, inside_model, outside_model)
+
+    # Update and render the window model at a specific position
+    window_model.update(0)
+    result_color = window_model.render(0.5)
+    ```
+    """
+    def __init__(self, name: str, range_min: float, range_max: float, inside_model: Model, outside_model: Model):
+        self.range_min = range_min
+        self.range_max = range_max
+        self.inside_model = inside_model
+        self.outside_model = outside_model
+        super().__init__(name)
+
+    def update(self, timestamp_ms):
+        self.inside_model.update(timestamp_ms)
+        self.outside_model.update(timestamp_ms)
+
+    def render(self, pos):
+        if self.range_min <= pos <= self.range_max:
+            return self.inside_model.render(pos)
+        else:
+            return self.outside_model.render(pos)
+        pass
+
+
 # ##### IDEAS #####
 
 #  Dim
