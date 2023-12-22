@@ -1,7 +1,7 @@
 import unittest
 
-from src import colors
-from src.models import Model, Solid, Gradient, MultiGradient, Map, Triangle, Reverse, Add
+from models import Model, Solid, Gradient, MultiGradient, Map, Triangle, Reverse, Add, Window
+import colors
 
 
 class TestSolidModel(unittest.TestCase):
@@ -169,6 +169,21 @@ class TestAddModel(unittest.TestCase):
         result = add_model.render(0.5)
         expected_result = (255, 225, 105)
         self.assertEqual(result, expected_result)
+
+
+class TestWindow(unittest.TestCase):
+    def test_render(self):
+        # Create models for inside and outside the window
+        inside_model = Solid("inside-red", colors.RED)
+        outside_model = Solid("outside-blue", colors.BLUE)
+
+        # Create a window that transitions from the inside model to the outside model
+        window_model = Window("TestWindow", 0.3, 0.7, inside_model, outside_model)
+
+        # Call the render method
+        self.assertEqual(window_model.render(0.2), colors.BLUE)
+        # self.assertEqual(window_model.render(0.2), colors.RED)
+        self.assertEqual(window_model.render(0.2), colors.BLUE)
 
 
 if __name__ == '__main__':
