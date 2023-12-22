@@ -2,7 +2,6 @@ DEVICE=/Volumes/CIRCUITPY/
 FILES=("code.py")
 LIB_FILES=(
   "colors.py"
-  "roving_dot.py"
   "models.py"
   "renderer.py"
   "animations.py"
