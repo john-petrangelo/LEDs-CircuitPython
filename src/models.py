@@ -1,4 +1,5 @@
 import math
+import random
 
 import colors
 import utils
@@ -203,7 +204,8 @@ class MultiGradient(Model):
             return self.color_list[lower]
 
         ratio = (color_pos - lower) / (upper - lower)
-        return colors.blend(self.color_list[lower], self.color_list[upper], ratio)
+        color = colors.blend(self.color_list[lower], self.color_list[upper], ratio)
+        return color
 
 
 class Map(Model):
@@ -267,6 +269,16 @@ class Map(Model):
 
         # Position is outside the range, default to black
         return colors.BLACK
+
+    def set_from_range(self, from_min: float, from_max: float) -> None:
+        """
+        Set the "from" range.
+
+        :param from_min: new minimum value of the range
+        :param from_max: new maximum value of the range
+        """
+        self.from_min = from_min
+        self.from_max = from_max
 
 
 class Triangle(Model):
@@ -470,6 +482,35 @@ class Window(Model):
             return self.outside_model.render(pos)
         pass
 
+
+class Flame(Model):
+    COLOR1 = colors.blend(colors.RED, colors.YELLOW, 0.5)
+    COLOR2 = colors.blend(colors.RED, colors.YELLOW, 0.7)
+    COLOR3 = colors.blend(colors.RED, colors.YELLOW, 0.9)
+    PERIOD_MS = 110
+
+    last_update_ms = 0.0
+    gradient = MultiGradient("flame-multigradient",
+                             [colors.BLACK, COLOR1, COLOR2, COLOR3, COLOR2, COLOR1, colors.BLACK])
+    model = Map("flame-map", 0.0, 1.0, 0.0, 1.0, gradient)
+
+    def __init__(self, name: str):
+        super().__init__(name)
+
+    def update(self, timestamp_ms):
+        # Only update the model occasionally to create the "flickering" effect
+        if (timestamp_ms - self.last_update_ms) > self.PERIOD_MS:
+            self.last_update_ms = timestamp_ms
+
+            lower = random.uniform(0.0, 0.2)
+            upper = random.uniform(0.8, 1.0)
+
+            self.model.set_from_range(lower, upper)
+
+            self.model.update(timestamp_ms)
+
+    def render(self, pos: float):
+        return self.model.render(pos)
 
 # ##### IDEAS #####
 
