@@ -14,7 +14,7 @@ class Renderer:
             return
 
         # Update the current state of the model to match the current time.
-        absolute_now_ms = time.monotonic_ns()//1000000
+        absolute_now_ms = time.monotonic()*1000
         relative_now_ms = absolute_now_ms - self.start_time
         self.model.update(relative_now_ms)
 
