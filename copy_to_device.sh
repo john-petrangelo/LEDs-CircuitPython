@@ -1,10 +1,10 @@
 DEVICE=/Volumes/CIRCUITPY/
 FILES=("code.py")
 LIB_FILES=(
+  "animations.py"
   "colors.py"
   "models.py"
   "renderer.py"
-  "animations.py"
   "utils.py"
 )
 echo "Copying $LIB_FILES from src/ to device lib/"
