@@ -1,5 +1,5 @@
 import unittest
-from colors import same, add, blend, fade, BLACK, GRAY, RED, GREEN, YELLOW
+from colors import same, add, blend, fade, BLACK, RED, GREEN
 
 
 class TestSameFunction(unittest.TestCase):
