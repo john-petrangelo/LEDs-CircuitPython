@@ -1,19 +1,19 @@
 import unittest
-from colors import same, add, blend, fade, BLACK, GRAY
+from colors import same, add, blend, fade, BLACK, GRAY, RED, GREEN, YELLOW
 
 
 class TestSameFunction(unittest.TestCase):
 
     def test_same_identical_colors(self):
-        color1 = (255, 0, 0)
-        color2 = (255, 0, 0)
+        color1 = RED
+        color2 = RED
 
         # Assert that identical colors are considered the same
         result = same(color1, color2)
         self.assertTrue(result)
 
     def test_same_similar_colors(self):
-        color1 = (255, 0, 0)
+        color1 = RED
         color2 = (254.9991, 0.0009, 0)
 
         # Assert that slightly different colors within the default delta are considered the same
@@ -21,7 +21,7 @@ class TestSameFunction(unittest.TestCase):
         self.assertTrue(result)
 
     def test_same_different_colors_outside_delta(self):
-        color1 = (255, 0, 0)
+        color1 = RED
         color2 = (254.89, 0.11, 0)
 
         # Assert that different delta values affect the comparison
@@ -31,22 +31,30 @@ class TestSameFunction(unittest.TestCase):
         self.assertFalse(result_default_delta)
         self.assertTrue(result_custom_delta)
 
+    def test_same_invalid_colors(self):
+        with self.assertRaises(ValueError):
+            same((0.0, 0.0), BLACK)
+
 
 class TestBlendFunction(unittest.TestCase):
 
     def test_blend_colors(self):
         # Test case 1
-        result = blend((255, 0, 0), (0, 255, 0), 0.5)
+        result = blend(RED, GREEN, 0.5)
         self.assertEqual(result, (127.5, 127.5, 0))
 
         # Test case 2
         result = blend((255, 0, 0), (0, 0, 255), 0.25)
         self.assertEqual(result, (191.25, 0.0, 63.75))
 
+        # Test case 3
+        # result = blend(RED, YELLOW, 0.5)
+        # self.assertEqual(result, (255.0, 127.5, 0.0))
+
     def test_invalid_input(self):
         # Test case for invalid input
-        result = blend((255, 0, 0), (0, 255, 0, 255), 0.5)
-        self.assertEqual(result, GRAY)
+        with self.assertRaises(ValueError):
+            result = blend((255, 0, 0), (0, 255, 0, 255), 0.5)
 
 
 class TestFadeFunction(unittest.TestCase):
@@ -67,8 +75,14 @@ class TestFadeFunction(unittest.TestCase):
 
     def test_invalid_input(self):
         # Test case for invalid input
-        result = fade((255, 0, 0, 255), 0.5)
-        self.assertEqual(result, GRAY)  # Invalid color should fade to black
+        with self.assertRaises(ValueError):
+            fade((255, 0, 0, 255), 0.5)
+
+        with self.assertRaises(ValueError):
+            fade(BLACK, -0.1)
+
+        with self.assertRaises(ValueError):
+            fade(BLACK, 1.1)
 
 
 class TestAddFunction(unittest.TestCase):
@@ -98,6 +112,10 @@ class TestAddFunction(unittest.TestCase):
         # Test case for an empty input
         result = add()
         self.assertEqual(result, (0, 0, 0))  # Sum of an empty list should be (0, 0, 0)
+
+    def test_invalid_color(self):
+        with self.assertRaises(ValueError):
+            add((0.0, 0.0))
 
 
 if __name__ == '__main__':

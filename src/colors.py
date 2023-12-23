@@ -17,30 +17,17 @@ def same(c1: tuple, c2: tuple, allowed_delta: float = 0.001) -> bool:
     """
     Check if two color tuples are nearly identical within a specified delta.
 
-    Parameters:
-    - `c1` (tuple): The first color tuple to compare.
-    - `c2` (tuple): The second color tuple to compare.
-    - `allowed_delta` (float, optional): The maximum allowed difference for each channel.
-      Defaults to 0.001.
+    :param c1: The first color tuple to compare.
+    :param c2: The second color tuple to compare.
+    :param allowed_delta: The maximum allowed difference for each channel. Defaults to 0.001.
 
-    Returns:
-    - bool: True if the color tuples are nearly identical, False otherwise.
+    :returns: bool - True if the color tuples are nearly identical, False otherwise.
 
-    The function checks if each channel (red, green, blue) of the two color tuples `c1` and `c2` are nearly equal
-    within the specified `allowed_delta`.
-
-    Usage:
-    ```python
-    color1 = (255, 0, 0)
-    color2 = (255, 0, 0)
-    if same(color1, color2):
-        print("Colors are nearly identical.")
-    ```
-
-    Note:
-    - The function uses the specified `allowed_delta` to account for potential floating-point inaccuracies in color representations.
-    - Adjust the `allowed_delta` parameter based on the precision requirements of your color comparison.
+    :raise ValueError: If the input color tuples do not have exactly three components (RGB).
     """
+    if len(c1) != 3 or len(c2) != 3:
+        raise ValueError("expected RGB tuple", c1, c2)
+
     for channel in zip(c1, c2):
         if abs(channel[0] - channel[1]) > allowed_delta:
             return False
@@ -57,9 +44,14 @@ def blend(c1: tuple, c2: tuple, ratio: float) -> tuple:
     :param c2: Second color
     :param ratio: Ratio of second color to first color [0.0 - 1.0]
     :return: blended color
+    :raise ValueError: If the input color tuples do not have exactly three components (RGB).
+    :raise ValueError: If the ratio is outside the valid range [0.0 - 1.0].
     """
     if len(c1) != 3 or len(c2) != 3:
-        return GRAY
+        raise ValueError("expected RGB tuple", c1, c2)
+
+    if not 0.0 <= ratio <= 1.0:
+        raise ValueError("ratio must be between 0.0 and 1.0", ratio)
 
     red = c1[0] + (c2[0] - c1[0]) * ratio
     green = c1[1] + (c2[1] - c1[1]) * ratio
@@ -73,6 +65,8 @@ def fade(c: tuple, ratio: float):
     :param c: The color
     :param ratio: Amount of blackness, 0.0 = black, 1.0 = full color, 0.5 = halfway to black
     :return: faded color
+    :raise ValueError: If the input color tuple does not have exactly three components (RGB).
+    :raise ValueError: If the ratio is outside the valid range [0.0 - 1.0].
     """
     return blend(BLACK, c, ratio)
 
@@ -82,9 +76,16 @@ def add(*colors: tuple):
     Add colors together, constraining each color component to valid range
     :param colors: colors to add together
     :return: sum of colors
+    :raise ValueError: If any of the input color tuples does not have exactly three components (RGB).
     """
+    for color in colors:
+        if len(color) != 3:
+            raise ValueError("expected RGB tuple", color)
+
     if not colors:
         return BLACK
+
+    # Sum over all the colors for each color channel.
     sum_red, sum_green, sum_blue = map(sum, zip(*colors))
 
     # Return the resulting sum, constraining value to be between 0 and 255
