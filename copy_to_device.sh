@@ -1,18 +1,13 @@
 DEVICE=/Volumes/CIRCUITPY/
-FILES=("code.py")
-LIB_FILES=(
-  "animations.py"
-  "colors.py"
-  "models.py"
-  "renderer.py"
-  "utils.py"
-)
-echo "Copying $LIB_FILES from src/ to device lib/"
-cd src
-cp $LIB_FILES $DEVICE/lib
 
-echo "Copying $FILES to device root"
-cp $FILES $DEVICE
+echo "Copying luminaria/ from src/ to device lib/"
+cp -R src/luminaria $DEVICE/lib/
+
+echo "Copying examples/ from src/ to device lib/"
+cp -R src/examples $DEVICE/lib/
+
+echo "Copying main program to device root"
+cp src/code.py $DEVICE
 
 echo "Syncing filesystem"
 sync
