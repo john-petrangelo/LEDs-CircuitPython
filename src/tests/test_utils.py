@@ -1,5 +1,5 @@
 import unittest
-from utils import map_value
+from luminaria.utils import map_value
 
 
 class TestMapValueFunction(unittest.TestCase):

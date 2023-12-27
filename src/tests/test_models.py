@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import patch
 
-from models import Solid, Gradient, MultiGradient, Map, Triangle, Reverse, Add, Window, Flame
-import colors
+from luminaria.models import Solid, Gradient, MultiGradient, Map, Triangle, Reverse, Add, Window, Flame
+from luminaria import colors
 
 
 class TestSolidModel(unittest.TestCase):

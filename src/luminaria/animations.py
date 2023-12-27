@@ -1,5 +1,5 @@
 import colors
-from models import Model, Add, Triangle
+from models import Model
 
 
 def map_value(value, in_min, in_max, out_min, out_max):
@@ -111,29 +111,3 @@ class Rotate(Model):
     def set_model(self, new_model: Model):
         """ Set the model to be rotated """
         self.model = new_model
-
-
-def make_crystal(upper_color: tuple, upper_period_ms: float,
-                 middle_color: tuple, middle_period_ms: float,
-                 lower_color: tuple, lower_period_ms: float):
-    upper_model = Triangle("crystal upper color", 0.6, 1.0, upper_color)
-    middle_model = Triangle("crystal middle color", 0.3, 0.7, middle_color)
-    lower_model = Triangle("crystal lower color", 0.0, 0.4, lower_color)
-
-    if upper_period_ms <= 10 * 1000:
-        print("Adding pulsate to upper crystal model")
-        upper_model = Pulsate("crystal upper pulsate", 0.3, 1.0,
-                              upper_period_ms / 2, upper_period_ms / 2, upper_model)
-    if upper_period_ms <= 10 * 1000:
-        middle_model = Pulsate("crystal middle pulsate", 0.4, 1.0,
-                               middle_period_ms / 2, middle_period_ms / 2, middle_model)
-    if upper_period_ms <= 10 * 1000:
-        lower_model = Pulsate("crystal lower pulsate", 0.3, 1.0,
-                              lower_period_ms / 2, lower_period_ms / 2, lower_model)
-
-    return Add("crystal sum", [upper_model, middle_model, lower_model])
-
-
-def make_dark_crystal():
-    color = (255, 0, 208)
-    return make_crystal(color, 5000, color, 8000, color, 7000)
