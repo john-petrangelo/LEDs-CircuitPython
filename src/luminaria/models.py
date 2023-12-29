@@ -1,8 +1,8 @@
 import math
 import random
 
-import colors
-import utils
+from .colors import add, blend, BLACK, RED, YELLOW
+from .utils import map_value
 
 
 class Model:
@@ -68,7 +68,7 @@ class Model:
         :param pos: position of the pixel to be rendered (0.0 - 1.0)
         :return: color
         """
-        return colors.BLACK
+        return BLACK
 
 
 class Solid(Model):
@@ -154,7 +154,7 @@ class Gradient(Model):
         super().__init__(name)
 
     def render(self, pos: float):
-        return colors.blend(self.c1, self.c2, pos)
+        return blend(self.c1, self.c2, pos)
 
 
 class MultiGradient(Model):
@@ -204,7 +204,7 @@ class MultiGradient(Model):
             return self.color_list[lower]
 
         ratio = (color_pos - lower) / (upper - lower)
-        color = colors.blend(self.color_list[lower], self.color_list[upper], ratio)
+        color = blend(self.color_list[lower], self.color_list[upper], ratio)
         return color
 
 
@@ -264,11 +264,11 @@ class Map(Model):
 
     def render(self, pos: float):
         if self.to_min <= pos <= self.to_max:
-            from_pos = utils.map_value(pos, self.to_min, self.to_max, self.from_min, self.from_max)
+            from_pos = map_value(pos, self.to_min, self.to_max, self.from_min, self.from_max)
             return self.model.render(from_pos)
 
         # Position is outside the range, default to black
-        return colors.BLACK
+        return BLACK
 
     def set_from_range(self, from_min: float, from_max: float) -> None:
         """
@@ -326,18 +326,18 @@ class Triangle(Model):
 
     def render(self, pos: float):
         if pos < self.range_min or pos > self.range_max:
-            return colors.BLACK
+            return BLACK
 
         mid_point = (self.range_min + self.range_max) / 2
 
         if pos <= mid_point:
             # Rising side of triangle
-            ratio = utils.map_value(pos, self.range_min, mid_point, 0.0, 1.0)
-            return colors.blend(colors.BLACK, self.color, ratio)
+            ratio = map_value(pos, self.range_min, mid_point, 0.0, 1.0)
+            return blend(BLACK, self.color, ratio)
         else:
             # Falling side of triangle
-            ratio = utils.map_value(pos, mid_point, self.range_max, 1.0, 0.0)
-            return colors.blend(colors.BLACK, self.color, ratio)
+            ratio = map_value(pos, mid_point, self.range_max, 1.0, 0.0)
+            return blend(BLACK, self.color, ratio)
 
 
 class Reverse(Model):
@@ -421,7 +421,7 @@ class Add(Model):
 
     def render(self, pos: float):
         model_colors = [m.render(pos) for m in self.models]
-        return colors.add(*model_colors)
+        return add(*model_colors)
 
 
 class Window(Model):
@@ -464,6 +464,7 @@ class Window(Model):
     result_color = window_model.render(0.5)
     ```
     """
+
     def __init__(self, name: str, range_min: float, range_max: float, inside_model: Model, outside_model: Model):
         self.range_min = range_min
         self.range_max = range_max
@@ -484,14 +485,13 @@ class Window(Model):
 
 
 class Flame(Model):
-    COLOR1 = colors.blend(colors.RED, colors.YELLOW, 0.5)
-    COLOR2 = colors.blend(colors.RED, colors.YELLOW, 0.7)
-    COLOR3 = colors.blend(colors.RED, colors.YELLOW, 0.9)
+    COLOR1 = blend(RED, YELLOW, 0.5)
+    COLOR2 = blend(RED, YELLOW, 0.7)
+    COLOR3 = blend(RED, YELLOW, 0.9)
     PERIOD_MS = 110
 
     last_update_ms = 0.0
-    gradient = MultiGradient("flame-multigradient",
-                             [colors.BLACK, COLOR1, COLOR2, COLOR3, COLOR2, COLOR1, colors.BLACK])
+    gradient = MultiGradient("flame-multigradient", [BLACK, COLOR1, COLOR2, COLOR3, COLOR2, COLOR1, BLACK])
     model = Map("flame-map", 0.0, 1.0, 0.0, 1.0, gradient)
 
     def __init__(self, name: str):

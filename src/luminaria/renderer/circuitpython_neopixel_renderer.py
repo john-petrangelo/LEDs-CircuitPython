@@ -3,11 +3,7 @@ import time
 import neopixel
 from microcontroller import Pin
 
-from models import Model
-
-
-# PIXELS_PIN = board.GP28
-# ORDER = neopixel.RGB
+from luminaria.models import Model
 
 
 class Renderer:
@@ -18,12 +14,10 @@ class Renderer:
       :param pixels_count: The number of NeoPixel LEDs in the strip.
       :param pixels_order: The color order of the NeoPixel LEDs (default: neopixel.RGB).
       :param brightness: The brightness of the NeoPixel LEDs, ranging from 0.0 to 1.0 (default: 1.0).
-
-      :method render: Renders the current state of the assigned model onto the NeoPixel LEDs.
-      :method reset: Resets the reference time for model rendering to the current time.
       """
 
-    def __init__(self, pixels_pin: Pin, pixels_count: int, *, pixels_order: str = neopixel.RGB, brightness: float = 1.0):
+    def __init__(self, pixels_pin: Pin, pixels_count: int, *, pixels_order: str = neopixel.RGB,
+                 brightness: float = 1.0):
         self._pixels = neopixel.NeoPixel(pixels_pin, pixels_count, pixel_order=pixels_order,
                                          brightness=brightness, auto_write=False)
         self._brightness = brightness
@@ -56,7 +50,7 @@ class Renderer:
             return
 
         # Update the current state of the model to match the current time.
-        absolute_now_ms = time.monotonic()*1000
+        absolute_now_ms = time.monotonic() * 1000
         relative_now_ms = absolute_now_ms - self._start_time
         self._model.update(relative_now_ms)
 

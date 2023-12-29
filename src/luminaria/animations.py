@@ -1,5 +1,5 @@
-import colors
-from models import Model
+from .colors import fade, RED
+from .models import Model
 
 
 def map_value(value, in_min, in_max, out_min, out_max):
@@ -49,7 +49,7 @@ class Pulsate(Model):
 
     def render(self, pos: float):
         old_color = self.model.render(pos)
-        new_color = colors.fade(old_color, self.dimness)
+        new_color = fade(old_color, self.dimness)
         return new_color
 
 
@@ -95,7 +95,7 @@ class Rotate(Model):
     def render(self, pos: float):
         # If there's no predecessor, then there's nothing to rotate. Bail out.
         if not self.model:
-            return colors.RED
+            return RED
 
         # Add the offset to the position, then correct for wrap-around
         rotated_pos = (pos + self.rotation_offset) % 1.0

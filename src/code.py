@@ -2,10 +2,9 @@ import time
 
 import board
 
-from colors import WHITE
-from luminaria import colors
-from luminaria.models import MultiGradient, Solid
 from luminaria.animations import Rotate
+from luminaria.colors import BLUE, GREEN, ORANGE, RED, VIOLET, WHITE, YELLOW
+from luminaria.models import MultiGradient, Solid
 from luminaria.renderer.circuitpython_neopixel_renderer import Renderer
 
 # Setup neopixel sequence
@@ -22,9 +21,7 @@ time.sleep(0.2)
 
 # Set up the model for the pixels
 print("Setting up lighting model")
-gradient = MultiGradient("Gradient rainbow",
-                         [colors.RED, colors.ORANGE, colors.YELLOW, colors.GREEN, colors.BLUE, colors.VIOLET,
-                          colors.RED])
+gradient = MultiGradient("Gradient rainbow", [RED, ORANGE, YELLOW, GREEN, BLUE, VIOLET, RED])
 rotate = Rotate("Rotation", 2500, gradient)
 pixels.model = rotate
 
