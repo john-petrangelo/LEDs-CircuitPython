@@ -20,9 +20,14 @@ class Renderer:
                  brightness: float = 1.0):
         self._pixels = neopixel.NeoPixel(pixels_pin, pixels_count, pixel_order=pixels_order,
                                          brightness=brightness, auto_write=False)
+        self._pixels_pin = pixels_pin
+        self._pixels_count = pixels_count
+        self._pixels_order = pixels_order
         self._brightness = brightness
         self._start_time = time.monotonic_ns() // 1000000
         self._model = None
+        self._render_durations = [1000.0] * 10
+        self._show_durations = [1000.0] * 10
 
     @property
     def model(self):
@@ -44,6 +49,7 @@ class Renderer:
         """
         Render the model at the current time and updates the LED lights accordingly.
         """
+        before_time = time.monotonic()
 
         # If there's no model then there is nothing to render.
         if self._model is None:
@@ -60,11 +66,39 @@ class Renderer:
             color = self._model.render(pos)
             self._pixels[i] = color
 
+        after_time = time.monotonic()
+        self._render_durations.pop(0)
+        self._render_durations.append(after_time - before_time)
+
         # Write the new colors to the LEDs
+        before_time = time.monotonic()
         self._pixels.show()
+        after_time = time.monotonic()
+        self._show_durations.pop(0)
+        self._show_durations.append(after_time - before_time)
 
     def reset(self):
         """
         Reset the reference time for model rendering to now
         """
         self._start_time = time.monotonic_ns() // 1000000
+
+    def get_info(self):
+        """
+        Returns information about the current state of the renderer
+        """
+        avg_render_duration = sum(self._render_durations) / len(self._render_durations)
+        avg_show_duration = sum(self._show_durations) / len(self._show_durations)
+
+        info = {
+            "pixelsPin": self._pixels_pin,
+            "pixelsCount": self._pixels_count,
+            "pixelsOrder": self._pixels_order,
+            "model": self.model.name,
+            "brightness": self.brightness,
+            "startTime": self._start_time,
+            "nowTime": time.monotonic_ns() // 1000000,
+            "averageRenderTime": avg_render_duration,
+            "averageShowTime": avg_show_duration,
+        }
+        return info

@@ -6,6 +6,7 @@ from luminaria.models import Model
 
 PIXEL_GAP_WIDTH = 10
 PIXEL_MAX_WIDTH = 96
+LOOP_PERIOD_MS = 5
 
 
 class Renderer:
@@ -21,9 +22,14 @@ class Renderer:
         self._model = model
 
         # Create the frame/window
-        self._pixel_size, window_width = _calc_sizes(pixels_count)
-        self._frame = PixelDrawingFrame(self, window_width, self._pixel_size + 48, None,
+        self._pixel_size, self._window_width = _calc_sizes(pixels_count)
+        self._window_height = self._pixel_size + 48
+
+        self._frame = PixelDrawingFrame(self, self._window_width, self._window_height, None,
                                         title="Pixels Animation Simulator")
+
+        samples_per_second = int(1000 / LOOP_PERIOD_MS)
+        self._durations = [1000.0] * samples_per_second
 
     @property
     def model(self):
@@ -37,6 +43,8 @@ class Renderer:
         """
         Render the model at the current time and updates the LED lights accordingly.
         """
+        before_time = time.perf_counter()
+
         # If there's no model then there is nothing to render.
         if self._model is None:
             print("No model to render")
@@ -64,11 +72,33 @@ class Renderer:
             dc.SetBrush(wx.Brush(wx_color))
             dc.DrawCircle(x + self._pixel_size // 2, y + self._pixel_size // 2, self._pixel_size // 2)
 
+        after_time = time.perf_counter()
+        self._durations.pop(0)
+        self._durations.append(after_time - before_time)
+
     def reset(self):
         """
         Reset the reference time for model rendering to now
         """
         self._start_time = time.monotonic_ns() // 1000000
+
+    def get_info(self):
+        """
+        Returns information about the current state of the renderer
+        """
+        avg_render_duration = sum(self._durations) / len(self._durations)
+
+        info = {
+            "pixelsCount": self._pixels_count,
+            "pixelSize": self._pixel_size,
+            "windowWidth": self._window_width,
+            "windowHeight": self._window_height,
+            "model": self.model.name,
+            "startTime": self._start_time,
+            "nowTime": time.monotonic_ns() // 1000000,
+            "averageRenderTime": int(avg_render_duration * 1000),
+        }
+        return info
 
 
 def _calc_sizes(pixels_count: int):
@@ -95,7 +125,7 @@ class PixelDrawingFrame(wx.Frame):
         # Set up a timer to update the pixels periodically
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.on_timer, self.timer)
-        self.timer.Start(10)  # ms
+        self.timer.Start(LOOP_PERIOD_MS)
 
         # Start the show
         self.Refresh()
@@ -113,3 +143,4 @@ class PixelDrawingPanel(wx.Panel):
 
     def on_paint(self, _):
         self._renderer.render(self)
+
