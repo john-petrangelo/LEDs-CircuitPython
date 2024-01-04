@@ -8,7 +8,7 @@ authors = [
     {name = "John Petrangelo", email = "john@petrangelo.org"},
 ]
 description = "Animate pixels and render on Neopixel strips or other outputs"
-version = "0.2"
+version = "0.4"
 dependencies = [
     "adafruit-circuitpython-httpserver",
     "adafruit-circuitpython-neopixel",
