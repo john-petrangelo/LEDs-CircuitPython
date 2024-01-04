@@ -15,26 +15,12 @@ class Model:
     the `update` method to adjust their state to a specified timestamp.
 
     Parameters:
-    - `name` (str): Name of the `Model` instance, shown in debug messages.
+    - `name` (str): Name of the `Model` instance, useful for debugging
 
     Methods:
     - `update(timestamp_ms: float)`: Updates the model to the specified timestamp.
       Models that change with time (animations) will need to implement this function.
     - `render(pos: float) -> Tuple[int, int, int]`: Returns the color to be displayed at the specified position.
-
-    Attributes:
-    - `name` (str): Name of the `Model` instance, shown in debug messages.
-
-    Usage:
-    ```python
-    # Create a custom model by subclassing Model and implementing the render method
-    class CustomModel(Model):
-        def render(self, pos: float):
-            # Implementation of how the model produces colors at different positions
-            return some_color
-
-    custom_model = CustomModel("CustomModel")
-    result_color = custom_model.render(0.5)
     ```
 
     Note:
@@ -84,22 +70,6 @@ class Solid(Model):
 
     Methods:
     - `render(pos: float) -> Tuple[int, int, int]`: Returns the constant color defined by the `Solid` model.
-
-    Attributes:
-    - `color` (tuple): Color of the solid model specified as an RGB tuple.
-    - `name` (str): Name of the `Solid` instance, shown in debug messages.
-
-    Usage:
-    ```python
-    # Create a solid model with a specific color
-    red_solid = Solid("RedSolid", (255, 0, 0))
-
-    # Render the solid model at a specific position
-    result_color = red_solid.render(0.5)
-    ```
-
-    Note:
-    - The `Solid` model always produces the same color regardless of the position.
     """
 
     def __init__(self, name, color: tuple):
@@ -128,18 +98,10 @@ class Gradient(Model):
     Methods:
     - `render(pos: float) -> Tuple[int, int, int]`: Returns the color of the gradient at the specified position.
 
-    Attributes:
-    - `c1` (tuple): First color of the gradient specified as an RGB tuple.
-    - `c2` (tuple): Second color of the gradient specified as an RGB tuple.
-    - `name` (str): Name of the `Gradient` instance, shown in debug messages.
-
     Usage:
     ```python
     # Create a gradient model transitioning from red to green
     red_to_green = Gradient("RedToGreen", colors.RED, colors.GREEN)
-
-    # Render the gradient model at a specific position
-    result_color = red_to_green.render(0.5)
     ```
     """
 
@@ -172,24 +134,11 @@ class MultiGradient(Model):
     Methods:
     - `render(pos: float) -> Tuple[int, int, int]`: Returns the color of the gradient at the specified position.
 
-    Attributes:
-    - `color_list` (list): List of color tuples specifying the gradient color points.
-    - `name` (str): Name of the `MultiGradient` instance, shown in debug messages.
-
     Usage:
     ```python
     # Create a multi-gradient model with three color points
     rainbow_model = MultiGradient("Rainbow", [colors.RED, colors.GREEN, colors.BLUE])
-
-    # Render the multi-gradient model at a specific position
-    result_color = rainbow_model.render(0.5)
-    ```
-
-    Note:
-    - The gradient is linearly interpolated between adjacent color points.
-    - Adjust the number and arrangement of color points in the `color_list` for desired gradient effects.
     """
-
     def __init__(self, name: str, color_list: list):
         self.color_list = color_list
         super().__init__(name)
@@ -231,13 +180,6 @@ class Map(Model):
     - `update(timestamp_ms: float)`: Update the internal state of the model.
     - `render(pos: float) -> Tuple[int, int, int]`: Obtain the color at a given position.
 
-    Attributes:
-    - `from_min` (float): Minimum value of the range to map from.
-    - `from_max` (float): Maximum value of the range to map from.
-    - `to_min` (float): Minimum value of the range to map to.
-    - `to_max` (float): Maximum value of the range to map to.
-    - `model` (Model): The original model to map.
-
     Usage:
     ```python
     gradient_model = Gradient("TestGradient", (255, 0, 0), (0, 255, 0))
@@ -250,7 +192,6 @@ class Map(Model):
     Note:
     - If the specified position is outside the mapped range (`to_min` to `to_max`), the default color is black.
     """
-
     def __init__(self, name: str, from_min, from_max, to_min, to_max, model: Model):
         self.from_min = from_min
         self.from_max = from_max
@@ -296,11 +237,6 @@ class Triangle(Model):
     Methods:
     - `render(pos: float) -> Tuple[int, int, int]`: Obtain the color at a given position within the specified range.
 
-    Attributes:
-    - `range_min` (float): The minimum position value of the range where colors will be generated.
-    - `range_max` (float): The maximum position value of the range where colors will be generated.
-    - `color` (tuple): The RGB color tuple representing the full color of the triangle at the midpoint.
-
     Usage:
     ```python
     # Creating a Triangle instance
@@ -312,12 +248,7 @@ class Triangle(Model):
 
     The `Triangle` model generates a triangle-shaped color gradient within the specified range, blending from black to
     the specified color and back to black.
-
-    Note:
-    - The color blending is based on linear interpolation, and the `utils.map_value` function is used to determine the
-      color ratio at a given position.
     """
-
     def __init__(self, name: str, range_min: float, range_max: float, color: tuple):
         self.range_min = range_min
         self.range_max = range_max
@@ -352,19 +283,7 @@ class Reverse(Model):
     - `update(timestamp_ms: float)`: Update the internal state of the input model.
     - `render(pos: float) -> Tuple[int, int, int]`: Obtain the reversed color at a given position.
 
-    Attributes:
-    - `model` (Model): The input model whose rendering will be reversed.
-
-    Usage:
-    ```python
-    original_model = Gradient("OriginalGradient", (255, 0, 0), (0, 255, 0))
-    reversed_model = Reverse("ReversedGradient", original_model)
-
-    # Render the reversed model at a specific position
-    result_color = reversed_model.render(0.75)
-    ```
     """
-
     def __init__(self, name: str, model: Model):
         self.model = model
         super().__init__(name)
@@ -391,9 +310,6 @@ class Add(Model):
     Methods:
     - `render(pos: float) -> Tuple[int, int, int]`: Obtain the combined color at a given position.
 
-    Attributes:
-    - `models` (list[Model]): List of models to be added together.
-
     Usage:
     ```python
     gradient_model = Gradient("Gradient1", (255, 0, 0), (0, 255, 0))
@@ -401,10 +317,6 @@ class Add(Model):
 
     # Create an Add model by combining the gradient and solid models
     combined_model = Add("CombinedModel", [gradient_model, solid_model])
-
-    # Render the combined model at a specific position
-    result_color = combined_model.render(0.5)
-    ```
 
     Note:
     - The addition operation is performed for each pixel channel (red, green, blue) independently.
@@ -443,13 +355,6 @@ class Window(Model):
     - `update(timestamp_ms: float)`: Update the internal state of the `Window` and its models.
     - `render(pos: float) -> Tuple[int, int, int]`: Obtain the color at a given position.
 
-    Attributes:
-    - `range_min` (float): Minimum position value of the window range.
-    - `range_max` (float): Maximum position value of the window range.
-    - `inside_model` (Model): The model to render inside the window range.
-    - `outside_model` (Model): The model to render outside the window range.
-    - `name` (str): Name of the `Window` instance, shown in debug messages.
-
     Usage:
     ```python
     # Create two models for inside and outside the window
@@ -458,13 +363,7 @@ class Window(Model):
 
     # Create a window that transitions from the inside gradient to the outside solid color
     window_model = Window("WindowModel", 0.3, 0.7, inside_model, outside_model)
-
-    # Update and render the window model at a specific position
-    window_model.update(0)
-    result_color = window_model.render(0.5)
-    ```
     """
-
     def __init__(self, name: str, range_min: float, range_max: float, inside_model: Model, outside_model: Model):
         self.range_min = range_min
         self.range_max = range_max
