@@ -44,6 +44,7 @@ class Renderer:
     @brightness.setter
     def brightness(self, brightness: float):
         self._brightness = brightness
+        self._pixels.brightness = brightness
 
     def render(self):
         """
