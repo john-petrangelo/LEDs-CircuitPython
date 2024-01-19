@@ -1,5 +1,4 @@
 import random
-import sys
 
 from .colors import fade, RED, blend, YELLOW, BLACK
 from .models import Model, MultiGradient, Map
@@ -56,39 +55,40 @@ class Pulsate(Model):
         return new_color
 
 
-# Rotate
-#
-
 class Rotate(Model):
     """
     An animation that rotates or shifts lights to the left or right.
     Wraps around so that once a color reaches the end, then it wraps around.
-    The speed of rotation is given as the period of a cycle in ms. A period
-    of zero is stopped. Positive speed rotates up, negative speed rotates down.
+    The frequency of rotation is given in cycles per second (Hz). Positive
+    frequency rotates up, negative frequency rotates down.
     """
     rotation_offset = 0.0
     prev_timestamp_ms = 0
 
-    def __init__(self, name: str, period_ms: float, model: Model):
+    def __init__(self, name: str, freq: float, model: Model):
         """
         :param name: Name of this model, shown in debug messages
-        :param period_ms:
-        :param model:
+        :param freq: Frequency of rotation in cycles per second
+        :param model: The model to rotate
         """
-        self.period_ms = period_ms
+        self.freq = freq
         self.model = model
         super().__init__(name)
 
     def update(self, timestamp_ms: int):
-        # New timestamp, calculate the new offset
+        # New timestamp, calculate the new offset and save the new timestamp
         delta_time_ms = timestamp_ms - self.prev_timestamp_ms
         self.prev_timestamp_ms = timestamp_ms
 
         # How far should we rotate given the time delta. Handle wrapping to keep
-        # offset between 0.0 and 1.0.
-        delta_pos = -delta_time_ms / self.period_ms
-        self.rotation_offset = (self.rotation_offset + delta_pos) % 1.0
+        # offset between 0.0 and 1.0. If the frequency is zero, don't rotate.
+        if self.freq == 0:
+            delta_pos = 0.0
+        else:
+            period_ms = 1000 / self.freq
+            delta_pos = -delta_time_ms / period_ms
 
+        self.rotation_offset = (self.rotation_offset + delta_pos) % 1.0
         if self.rotation_offset < 0.0:
             self.rotation_offset += 1.0
 

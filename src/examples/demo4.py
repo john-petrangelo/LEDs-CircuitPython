@@ -10,7 +10,7 @@ PIXELS_COUNT = 50
 
 def make_model():
     gradient = MultiGradient("Gradient rainbow", [RED, ORANGE, YELLOW, GREEN, BLUE, VIOLET, RED])
-    rotation = Rotate("Rotation", 7500, gradient)
+    rotation = Rotate("Rotation", 1/7.5, gradient)
     return rotation
 
 

@@ -10,7 +10,7 @@ PIXELS_COUNT = 50
 
 def make_model():
     gradient = Gradient("grad", BLUE, RED)
-    rot_grad = Rotate("Rotate Gradient", 2500, gradient)
+    rot_grad = Rotate("Rotate Gradient", 1/2.5, gradient)
     rev_grad = Reverse("reverse", rot_grad)
 
     map_left = Map("map left", 0.0, 1.0, 0.0, 0.5, rot_grad)

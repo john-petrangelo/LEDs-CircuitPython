@@ -13,7 +13,7 @@ def make_model():
     blue_gradient = Gradient("grad_red", BLUE, BLACK)
     green_solid = Solid("green solid", GREEN)
     sum3 = Add("Add", [red_gradient, blue_gradient, green_solid])
-    pulsation = Pulsate("Pulsation", dimmest=0.2, brightest=1.0, dim_ms=1000, brighten_ms=2000, model=sum3)
+    pulsation = Pulsate("Pulsation", 0.2, 1.0, 1000, 2000, sum3)
 
     return pulsation
 

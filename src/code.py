@@ -22,7 +22,7 @@ time.sleep(0.2)
 # Set up the model for the pixels
 print("Setting up lighting model")
 gradient = MultiGradient("Gradient rainbow", [RED, ORANGE, YELLOW, GREEN, BLUE, VIOLET, RED])
-rotate = Rotate("Rotation", 2500, gradient)
+rotate = Rotate("Rotation", 1/2.5, gradient)
 renderer.model = rotate
 
 print("Starting loop")

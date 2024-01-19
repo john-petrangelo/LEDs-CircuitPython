@@ -2,12 +2,11 @@ import unittest
 from unittest.mock import patch
 
 from luminaria.animations import Flame
-from luminaria.models import Gradient
 
 
 class TestFlame(unittest.TestCase):
     @patch('random.uniform', side_effect=[0.1, 0.9])
-    def test_update(self, mock_uniform):
+    def test_update(self, _):
         # Create an instance of Flame
         flame = Flame("TestFlame")
 

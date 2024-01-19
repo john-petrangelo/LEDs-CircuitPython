@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # Set up the model defining the pixel colors
     print("Setting up model rendering")
     gradient = MultiGradient("Gradient rainbow", [RED, ORANGE, YELLOW, GREEN, BLUE, VIOLET, RED])
-    rotate = Rotate("Rotation", 2500, gradient)
+    rotate = Rotate("Rotation", 1/2.5, gradient)
     wx_renderer = Renderer(PIXELS_COUNT, rotate)
     wx_renderer.model = rotate
 

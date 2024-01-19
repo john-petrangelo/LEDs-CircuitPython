@@ -1,8 +1,7 @@
 import unittest
-from unittest.mock import patch
 
-from luminaria.models import Solid, Gradient, MultiGradient, Map, Triangle, Reverse, Add, Window, Flame
 from luminaria import colors
+from luminaria.models import Solid, Gradient, MultiGradient, Map, Triangle, Reverse, Add, Window
 
 
 class TestSolidModel(unittest.TestCase):
@@ -185,22 +184,6 @@ class TestWindow(unittest.TestCase):
         self.assertEqual(window_model.render(0.2), colors.BLUE)
         # self.assertEqual(window_model.render(0.2), colors.RED)
         self.assertEqual(window_model.render(0.2), colors.BLUE)
-
-
-class TestFlame(unittest.TestCase):
-    @patch('random.uniform', side_effect=[0.1, 0.9])
-    def test_update(self, mock_uniform):
-        # Create an instance of Flame
-        flame_instance = Flame("TestFlame")
-        #
-        # # Call update method with the initial after first flicker
-        # flame_instance.update(0.2)
-        #
-        # # Check if the model was updated with the expected values
-        # expected_lower = 0.1
-        # expected_upper = 0.9
-        # self.assertEqual(flame_instance.model.from_min, expected_lower)
-        # self.assertEqual(flame_instance.model.from_max, expected_upper)
 
 
 if __name__ == '__main__':
