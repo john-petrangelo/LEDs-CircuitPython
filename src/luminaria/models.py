@@ -1,7 +1,6 @@
 import math
-import random
 
-from .colors import add, blend, BLACK, RED, YELLOW
+from .colors import add, blend, BLACK
 from .utils import map_value
 
 
@@ -215,8 +214,8 @@ class Map(Model):
         """
         Set the "from" range.
 
-        :param from_min: new minimum value of the range
-        :param from_max: new maximum value of the range
+        :param from_min: New minimum value of the range
+        :param from_max: New maximum value of the range
         """
         self.from_min = from_min
         self.from_max = from_max
@@ -381,35 +380,6 @@ class Window(Model):
         else:
             return self.outside_model.render(pos)
         pass
-
-
-class Flame(Model):
-    COLOR1 = blend(RED, YELLOW, 0.5)
-    COLOR2 = blend(RED, YELLOW, 0.7)
-    COLOR3 = blend(RED, YELLOW, 0.9)
-    PERIOD_MS = 110
-
-    last_update_ms = 0.0
-    gradient = MultiGradient("flame-multigradient", [BLACK, COLOR1, COLOR2, COLOR3, COLOR2, COLOR1, BLACK])
-    model = Map("flame-map", 0.0, 1.0, 0.0, 1.0, gradient)
-
-    def __init__(self, name: str):
-        super().__init__(name)
-
-    def update(self, timestamp_ms):
-        # Only update the model occasionally to create the "flickering" effect
-        if (timestamp_ms - self.last_update_ms) > self.PERIOD_MS:
-            self.last_update_ms = timestamp_ms
-
-            lower = random.uniform(0.0, 0.2)
-            upper = random.uniform(0.8, 1.0)
-
-            self.model.set_from_range(lower, upper)
-
-            self.model.update(timestamp_ms)
-
-    def render(self, pos: float):
-        return self.model.render(pos)
 
 # ##### IDEAS #####
 
