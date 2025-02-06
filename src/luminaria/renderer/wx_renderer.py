@@ -68,7 +68,7 @@ class Renderer:
             x = (i + 1) * PIXEL_GAP_WIDTH + i * self._pixel_size
             y = 10
 
-            wx_color = wx.Colour(color[0], color[1], color[2])
+            wx_color = wx.Colour(int(color[0]), int(color[1]), int(color[2]))
             dc.SetBrush(wx.Brush(wx_color))
             dc.DrawCircle(x + self._pixel_size // 2, y + self._pixel_size // 2, self._pixel_size // 2)
 

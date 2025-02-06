@@ -1,6 +1,6 @@
 import wx
 
-from luminaria.animations import Rotate
+from luminaria.animations import Flame, Rotate
 from luminaria.colors import BLUE, GREEN, ORANGE, RED, VIOLET, YELLOW
 from luminaria.models import MultiGradient
 from luminaria.renderer.wx_renderer import Renderer
@@ -13,11 +13,14 @@ if __name__ == "__main__":
     app = wx.App(False)
 
     # Set up the model defining the pixel colors
-    print("Setting up model rendering")
-    gradient = MultiGradient("Gradient rainbow", [RED, ORANGE, YELLOW, GREEN, BLUE, VIOLET, RED])
-    rotate = Rotate("Rotation", 1/2.5, gradient)
-    wx_renderer = Renderer(PIXELS_COUNT, rotate)
-    wx_renderer.model = rotate
+    print("Setting up model for rendering")
+    # gradient = MultiGradient("Gradient rainbow", [RED, ORANGE, YELLOW, GREEN, BLUE, VIOLET, RED])
+    # rotate = Rotate("Rotation", 1/10, gradient)
+    # model = rotate
+
+    model = Flame("Flame")
+
+    wx_renderer = Renderer(PIXELS_COUNT, model)
 
     # Run the app
     print("App loop starting")
